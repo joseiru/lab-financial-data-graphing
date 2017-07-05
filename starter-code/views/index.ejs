@@ -5,7 +5,42 @@
     <link rel='stylesheet' href='/stylesheets/style.css' />
   </head>
   <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
+    <canvas id="myChart" width="400" height="400"></canvas>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.bundle.min.js"></script>
   </body>
+
+  <script>
+      $.ajax({
+        url: "http://api.coindesk.com/v1/bpi/historical/close.json",
+        method: "GET",
+        success: function (response) {
+            const responseJSON = JSON.parse(response);
+            const dataX = Object.keys(responseJSON.bpi);
+            const dataY = Object.values(responseJSON.bpi);
+            var ctx = document.getElementById("myChart").getContext('2d');
+            var myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: dataX,
+                    datasets: [{
+                        label: 'Prices',
+                        data: dataY,
+                        borderColor: "#3e95cd",
+                        fill: false
+                    }]
+                },
+                options: {
+                    title: {
+                      display: true,
+                      text: 'Ironhack Coin'
+                    }
+                }
+            });
+        },
+        error: function (err) {
+          console.log(err);
+        },
+      })
+  </script>
 </html>
